@@ -1,9 +1,12 @@
+const { DUPLICATE_KEY_ERROR } = require("../constants/errorCodes");
 const User = require("../models/user");
 
 exports.registerUser = (req, res) => {
-    const user = new User(req.body);
+    if (!req.body.userName || !req.body.password) {
+        return res.status(400).json({ message: "Missing fields." });
+    }
 
-    console.log("New user request received");
+    const user = new User(req.body);
 
     user.save()
         .then((result) => {
@@ -14,6 +17,12 @@ exports.registerUser = (req, res) => {
             });
         })
         .catch((err) => {
-            res.status(400).json(err);
+            if (err.code === DUPLICATE_KEY_ERROR) {
+                res.status(400).json({
+                    message: "Username or email already exists.",
+                });
+            } else {
+                res.status(500).json({ message: "Error creating user." });
+            }
         });
 };

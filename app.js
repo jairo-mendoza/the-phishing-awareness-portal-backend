@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
+const helmet = require("helmet");
 
 const userRoutes = require("./routes/userRoutes");
 
@@ -9,10 +10,15 @@ const port = 9001;
 
 require("dotenv").config();
 
+// Validate environment variables
+if (!process.env.URI || !process.env.DB_NAME) process.exit(1);
+
 // Backend will be receiving JSON from front-end, we need to parse these requests
 app.use(express.json());
 // Cors is needed for requests from the front-end
 app.use(cors());
+// Helmet automatically sets response headers, increases security
+app.use(helmet());
 
 app.use("/user", userRoutes);
 
