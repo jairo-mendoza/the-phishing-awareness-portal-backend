@@ -59,3 +59,48 @@ exports.loginUser = (req, res) => {
         })
         .catch((err) => next(err)); // TODO: Define error handling middleware
 };
+
+/* Testing these methods */
+// TODO: Move these methods to a separate file
+const extractToken = (req, res, next) => {
+    const bearerHeader = req.headers["authorization"];
+
+    if (typeof bearerHeader !== "undefined") {
+        const bearer = bearerHeader.split(" ");
+        const bearerToken = bearer[1];
+        req.token = bearerToken;
+        next();
+    } else {
+        res.sendStatus(403);
+    }
+};
+
+const verifyToken = (req, res, next) => {
+    jwt.verify(req.token, process.env.JWT_SECRET, (err, authData) => {
+        if (err) {
+            res.sendStatus(403);
+        } else {
+            req.userId = authData.id;
+            next();
+        }
+    });
+};
+
+// Chaining together middleware functions
+exports.getUser = [
+    extractToken,
+    verifyToken,
+    (req, res) => {
+        console.log(`Fetching user with id: ${req.userId}...`);
+        User.findById(req.userId)
+            .then((user) => {
+                res.json({
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                });
+            })
+            .catch((err) => {
+                res.status(500).json({ message: "Error fetching user." });
+            });
+    },
+];
