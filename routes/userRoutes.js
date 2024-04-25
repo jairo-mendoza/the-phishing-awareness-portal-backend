@@ -9,8 +9,8 @@ const {
 
 console.log("Routed to user route");
 
-router.post("/register-user", registerUser);
-router.post("/login-user", loginUser);
+router.post("/register", registerUser);
+router.post("/login", loginUser);
 router.get("/", getUser);
 
 module.exports = router;

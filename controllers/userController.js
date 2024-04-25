@@ -34,7 +34,7 @@ exports.registerUser = (req, res) => {
 // Handle user login
 exports.loginUser = (req, res) => {
     const { email, password } = req.body;
-    console.log(`Logging in user: ${email}`);
+    console.log(`Trying to log in user: ${email}`);
 
     User.findOne({ email })
         .then((user) => {
@@ -51,7 +51,16 @@ exports.loginUser = (req, res) => {
                         process.env.JWT_SECRET,
                         { expiresIn: "1h" }
                     );
-                    res.status(200).json({ token });
+                    res.status(200).json({
+                        token,
+                        user: {
+                            id: user._id,
+                            userName: user.userName,
+                            email: user.email,
+                            firstName: user.firstName,
+                            lastName: user.lastName,
+                        },
+                    });
                 } else {
                     res.status(401).json({ message: "Invalid password." });
                 }
@@ -71,14 +80,14 @@ const extractToken = (req, res, next) => {
         req.token = bearerToken;
         next();
     } else {
-        res.sendStatus(403);
+        res.sendStatus(403).json({ message: "Token not provided." });
     }
 };
 
 const verifyToken = (req, res, next) => {
     jwt.verify(req.token, process.env.JWT_SECRET, (err, authData) => {
         if (err) {
-            res.sendStatus(403);
+            res.sendStatus(403).json({ message: "Invalid token." });
         } else {
             req.userId = authData.id;
             next();
@@ -94,7 +103,9 @@ exports.getUser = [
         console.log(`Fetching user with id: ${req.userId}...`);
         User.findById(req.userId)
             .then((user) => {
-                res.json({
+                res.status(200).json({
+                    userName: user.userName,
+                    email: user.email,
                     firstName: user.firstName,
                     lastName: user.lastName,
                 });

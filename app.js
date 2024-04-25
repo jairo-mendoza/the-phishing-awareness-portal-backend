@@ -16,7 +16,12 @@ if (!process.env.URI || !process.env.DB_NAME) process.exit(1);
 // Backend will be receiving JSON from front-end, we need to parse these requests
 app.use(express.json());
 // Cors is needed for requests from the front-end
-app.use(cors());
+// TODO: Will need to change origin when deploying
+app.use(
+    cors({
+        origin: "http://localhost:3000",
+    })
+);
 // Helmet automatically sets response headers, increases security
 app.use(helmet());
 
@@ -34,5 +39,5 @@ mongoose
         app.listen(port); // Only listen to requests after connecting to database
     })
     .catch((err) => {
-        console.log("Oh noes!");
+        console.error("COULD NOT CONNECT TO MONGODB!");
     });
