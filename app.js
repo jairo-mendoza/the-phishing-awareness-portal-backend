@@ -3,6 +3,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const helmet = require("helmet");
 
+const emailRoutes = require("./routes/emailRoutes");
 const userRoutes = require("./routes/userRoutes");
 
 const app = express();
@@ -26,6 +27,7 @@ app.use(
 app.use(helmet());
 
 app.use("/user", userRoutes);
+app.use("/email", emailRoutes);
 
 mongoose
     .connect(process.env.URI, {
