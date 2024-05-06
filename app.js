@@ -6,6 +6,7 @@ const helmet = require("helmet");
 const emailRoutes = require("./routes/emailRoutes");
 const userRoutes = require("./routes/userRoutes");
 const smsRoutes = require("./routes/smsRoutes");
+const forumPostRoutes = require("./routes/forumPostRoutes");
 
 const app = express();
 const port = 9001;
@@ -30,6 +31,7 @@ app.use(helmet());
 app.use("/user", userRoutes);
 app.use("/email", emailRoutes);
 app.use("/sms", smsRoutes);
+app.use("/posts", forumPostRoutes);
 
 mongoose
     .connect(process.env.URI, {

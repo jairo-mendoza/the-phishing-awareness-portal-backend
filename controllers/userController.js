@@ -47,14 +47,14 @@ exports.loginUser = (req, res) => {
                 if (doMatch) {
                     // Sign a token, payload first, then secret, then options
                     const token = jwt.sign(
-                        { id: user._id, userName: user.userName },
+                        { id: user._id },
                         process.env.JWT_SECRET,
                         { expiresIn: "1h" }
                     );
                     res.status(200).json({
                         token,
                         user: {
-                            id: user._id,
+                            userId: user._id,
                             userName: user.userName,
                             email: user.email,
                             firstName: user.firstName,
@@ -104,10 +104,13 @@ exports.getUser = [
         User.findById(req.userId)
             .then((user) => {
                 res.status(200).json({
-                    userName: user.userName,
-                    email: user.email,
-                    firstName: user.firstName,
-                    lastName: user.lastName,
+                    user: {
+                        id: user._id,
+                        userName: user.userName,
+                        email: user.email,
+                        firstName: user.firstName,
+                        lastName: user.lastName,
+                    },
                 });
             })
             .catch((err) => {
