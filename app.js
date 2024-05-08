@@ -7,6 +7,7 @@ const emailRoutes = require("./routes/emailRoutes");
 const userRoutes = require("./routes/userRoutes");
 const smsRoutes = require("./routes/smsRoutes");
 const forumPostRoutes = require("./routes/forumPostRoutes");
+const forumPostCommentRoutes = require("./routes/forumPostCommentRoutes");
 
 const app = express();
 const port = 9001;
@@ -34,6 +35,7 @@ app.use("/user", userRoutes);
 app.use("/email", emailRoutes);
 app.use("/sms", smsRoutes);
 app.use("/post", forumPostRoutes);
+app.use("/comment", forumPostCommentRoutes);
 
 mongoose
     .connect(process.env.URI, {

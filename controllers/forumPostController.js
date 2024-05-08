@@ -40,12 +40,31 @@ exports.getForumPosts = (req, res) => {
 exports.getForumPost = (req, res) => {
     ForumPost.findById(req.params.id)
         .populate("poster", "userName")
+        .populate({
+            path: "comments",
+            populate: { path: "commentor", select: "userName" },
+        })
         .then((forumPost) => {
             res.status(200).json({ forumPost: forumPost });
         })
         .catch((err) => {
             res.status(500).json({
-                message: `Error getting forum post...`,
+                message: `Error getting forum post...${err}`,
             });
         });
+};
+
+// Method for putting comments on a post
+exports.putForumPostComment = (req, res) => {
+    const { commentId } = req.body;
+
+    console.log(`Pushing comment id ${commentId} to post...`);
+
+    ForumPost.findByIdAndUpdate(req.params.id, {
+        $push: { comments: commentId },
+    })
+        .then(() => res.json({ message: "Comment added to post" }))
+        .catch((err) =>
+            res.status(500).json({ message: `Error adding comment to post...` })
+        );
 };

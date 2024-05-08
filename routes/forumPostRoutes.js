@@ -5,6 +5,7 @@ const {
     postForumPost,
     getForumPosts,
     getForumPost,
+    putForumPostComment,
 } = require("../controllers/forumPostController");
 
 console.log("Routed to forum post route");
@@ -14,5 +15,7 @@ router.post("/new-post", postForumPost);
 // id, title, poster, content (only a certain amount), likes, tags, img
 router.get("/all-posts", getForumPosts);
 router.get("/:id", getForumPost);
+
+router.put("/:id/add-comment", putForumPostComment);
 
 module.exports = router;
