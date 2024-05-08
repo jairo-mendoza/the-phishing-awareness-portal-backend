@@ -23,6 +23,8 @@ app.use(express.json());
 app.use(
     cors({
         origin: "http://localhost:3000",
+        methods: ["GET", "POST", "PUT", "DELETE"],
+        credentials: true,
     })
 );
 // Helmet automatically sets response headers, increases security
@@ -31,7 +33,7 @@ app.use(helmet());
 app.use("/user", userRoutes);
 app.use("/email", emailRoutes);
 app.use("/sms", smsRoutes);
-app.use("/posts", forumPostRoutes);
+app.use("/post", forumPostRoutes);
 
 mongoose
     .connect(process.env.URI, {
