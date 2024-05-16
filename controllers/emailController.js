@@ -9,7 +9,18 @@ exports.getEmail = (req, res) => {
 
     Email.find(filters)
         .then((emailArray) => {
-            res.status(200).json({ emailData: emailArray });
+            const responseArray = emailArray.map((email) => ({
+                type: "email",
+                sender: email.sender,
+                senderProfile: email.senderProfile,
+                subject: email.subject,
+                content: email.content,
+                body: email.body,
+                timeStamp: email.timeStamp,
+                isPhishing: email.isPhishing,
+            }));
+
+            res.status(200).json({ emailData: responseArray });
         })
         .catch((err) => {
             res.status(500).json({ message: "Error getting email." });

@@ -13,6 +13,7 @@ exports.getSMS = (req, res) => {
     SMS.find(filters)
         .then((smsArray) => {
             const responseArray = smsArray.map((sms) => ({
+                type: "sms",
                 number: sms.number,
                 content: sms.content,
                 timeStamp: sms.timeStamp,

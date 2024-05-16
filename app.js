@@ -3,6 +3,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const helmet = require("helmet");
 
+const allCommRoutes = require("./routes/allCommRoutes");
 const emailRoutes = require("./routes/emailRoutes");
 const userRoutes = require("./routes/userRoutes");
 const smsRoutes = require("./routes/smsRoutes");
@@ -36,6 +37,7 @@ app.use("/email", emailRoutes);
 app.use("/sms", smsRoutes);
 app.use("/post", forumPostRoutes);
 app.use("/comment", forumPostCommentRoutes);
+app.use("/all-comm", allCommRoutes); // Route to get both email and sms
 
 mongoose
     .connect(process.env.URI, {
