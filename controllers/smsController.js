@@ -1,24 +1,25 @@
 const SMS = require("../models/sms");
 
 exports.getSMS = (req, res) => {
-    SMS.countDocuments()
-        .then((count) => {
-            const random = Math.floor(Math.random() * count);
+    // Gets filters from query parameters in the request URL
+    let filters = req.query;
 
-            // Query all sms but only return one random sms
-            // skip function skips over the first `random` number of sms
-            return SMS.findOne().skip(random).exec();
-        })
-        .then((result) => {
-            // Remember, we are not sending the difficulty to the frontend (Might change later though)
-            res.status(200).json({
-                smsData: {
-                    number: result.number,
-                    content: result.content,
-                    timeStamp: result.timeStamp,
-                    isPhishing: result.isPhishing,
-                },
-            });
+    // If no filters are provided, default to an empty object
+    // TODO: Getting all SMS for now, will limit soon
+    if (Object.keys(filters).length === 0) {
+        filters = {};
+    }
+
+    SMS.find(filters)
+        .then((smsArray) => {
+            const responseArray = smsArray.map((sms) => ({
+                number: sms.number,
+                content: sms.content,
+                timeStamp: sms.timeStamp,
+                isPhishing: sms.isPhishing,
+            }));
+
+            res.status(200).json({ smsData: responseArray });
         })
         .catch((err) => {
             res.status(500).json({ message: "Error getting sms." });

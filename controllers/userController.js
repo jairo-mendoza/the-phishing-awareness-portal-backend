@@ -6,8 +6,19 @@ const User = require("../models/user");
 
 // Handle user registration
 exports.registerUser = (req, res) => {
-    if (!req.body.userName || !req.body.password) {
+    if (
+        !req.body.firstName ||
+        !req.body.lastName ||
+        !req.body.userName ||
+        !req.body.email ||
+        !req.body.password
+    ) {
         return res.status(400).json({ message: "Missing fields." });
+    }
+    if (req.body.password.length < 8) {
+        return res
+            .status(400)
+            .json({ message: "Password must be at least 8 characters long." });
     }
 
     const user = new User(req.body);
@@ -34,7 +45,6 @@ exports.registerUser = (req, res) => {
 // Handle user login
 exports.loginUser = (req, res) => {
     const { email, password } = req.body;
-    console.log(`Trying to log in user: ${email}`);
 
     User.findOne({ email })
         .then((user) => {

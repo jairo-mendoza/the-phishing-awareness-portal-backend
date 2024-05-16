@@ -21,11 +21,11 @@ exports.postForumPost = (req, res) => {
 
 // Method for the post preview
 exports.getForumPosts = (req, res) => {
-    console.log("Getting forum posts...");
     // Get all forum posts
     ForumPost.find({})
         .populate("poster", "userName") // populate 'poster' field with 'username' from the referenced document
         .select("-comments -createdAt") // exclude 'comments' and 'createdAt' field from the query results
+        .sort({ updatedAt: -1 }) // sort by 'updatedAt' field in descending order
         .then((forumPosts) => {
             res.status(200).json({ forumPosts: forumPosts });
         })
@@ -57,8 +57,6 @@ exports.getForumPost = (req, res) => {
 // Method for putting comments on a post
 exports.putForumPostComment = (req, res) => {
     const { commentId } = req.body;
-
-    console.log(`Pushing comment id ${commentId} to post...`);
 
     ForumPost.findByIdAndUpdate(req.params.id, {
         $push: { comments: commentId },

@@ -33,8 +33,6 @@ const userSchema = new mongoose.Schema(
 
 // Hash user password before user document is saved to database
 userSchema.pre("save", async function (next) {
-    // Mongoose Document object functions:
-    // https://mongoosejs.com/docs/api/document.html#Document.prototype.$isModified()
     // Only hash the password if it is modified or a new user document
     if (this.isModified("password") || this.isNew) {
         const hash = await bcrypt.hash(this.password, saltRounds);
